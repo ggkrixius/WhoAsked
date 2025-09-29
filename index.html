@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I'm thankful for you</title>
+  <meta name="description" content="A tiny thank-you page with poems." />
+  <style>
+    :root{
+      --bg1:#0f172a; --bg2:#1e293b;
+      --accent:#a78bfa; --accent2:#f472b6;
+      --text:#e5e7eb; --muted:#cbd5e1;
+      --ink:#e9ecf7; --ink-soft:#cfd5e6;
+      --card:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 10%, #1a2352 0%, transparent 60%),
+                  radial-gradient(1000px 700px at 80% 90%, #40235a 0%, transparent 60%),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      display:grid; place-items:center; padding:24px;
+    }
+    .card{
+      width:min(820px, 96vw);
+      background:linear-gradient(180deg, var(--card), rgba(255,255,255,0.02));
+      border:1px solid var(--border); border-radius:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+      overflow:hidden; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      animation: float 6s ease-in-out infinite; position: relative;
+    }
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+    .media{position:relative; aspect-ratio: 3 / 4; background:#111827; overflow:hidden;}
+    .media img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.06) contrast(1.02);}
+    .content{padding:24px 22px 10px; text-align:center}
+    h1{
+      margin:6px 0 10px; font-size:clamp(28px, 5vw, 40px); line-height:1.1; letter-spacing:.01em;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; background-clip:text; color:transparent; cursor: pointer;
+    }
+    p.lead{margin:0 auto 14px; max-width:60ch; color:var(--muted); font-size:clamp(15px, 1.9vw, 18px)}
+
+    /* Poems area */
+    .poems{
+      text-align:left;
+      margin: 8px auto 26px;
+      width:min(760px, 92vw);
+      background: rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .poem-row{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px;
+    }
+    label{font-size:14px; color:var(--ink-soft)}
+    select, .btn{
+      appearance:none;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.18);
+      color:var(--ink);
+      border-radius:10px; padding:10px 12px;
+      font-size:14px; cursor:pointer;
+    }
+    .btn{white-space:nowrap}
+    .poem-meta{
+      font-size:12px; color:var(--ink-soft); margin-top:2px;
+    }
+    .poem-box{
+      margin-top:10px;
+      border:1px dashed rgba(255,255,255,0.18);
+      border-radius:12px;
+      padding:16px 14px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    }
+    .poem-title{
+      margin:0 0 6px; font-weight:600; letter-spacing:.01em; color:#f0f2fb;
+      font-size:clamp(18px, 2.4vw, 22px); text-align:center;
+    }
+    .poem-text{
+      white-space:pre-wrap;
+      font-size:clamp(15px, 2vw, 17px);
+      line-height:1.65;
+      color:#e6e9f5;
+    }
+    .poem-actions{
+      display:flex; gap:8px; justify-content:flex-end; margin-top:10px;
+    }
+    .muted{opacity:.8}
+    hr.sep{
+      margin: 14px 0 0;
+      border: none; height:1px; background:rgba(255,255,255,0.12);
+    }
+
+    /* Easter-egg modal */
+    .egg-scrim{
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display:none; align-items:center; justify-content:center; z-index:50; opacity:0; transition:opacity .25s ease;
+    }
+    .egg-scrim.show{display:flex; opacity:1;}
+    .egg-modal{
+      width:min(560px, 92vw); border-radius:20px;
+      background: linear-gradient(180deg, rgba(20,24,45,.9), rgba(12,14,28,.92));
+      border:1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+      padding:22px 20px 18px; transform: scale(.96); animation: eggIn .28s ease forwards; position: relative; overflow:hidden;
+    }
+    @keyframes eggIn{to{transform:scale(1)}}
+    .egg-title{
+      margin:0 0 6px; font-size:clamp(20px, 4.8vw, 26px); letter-spacing:.01em;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; background-clip:text; color:transparent; text-align:center;
+    }
+    .egg-text{margin:8px auto 12px; max-width:52ch; font-size:clamp(16px, 2.5vw, 18px); color:#e7eaf3; text-align:center; min-height:1.6em;}
+    .egg-close{
+      position:absolute; top:8px; right:8px; background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18); color:#e5e7eb; border-radius:12px;
+      padding:6px 10px; font-size:13px; cursor:pointer;
+    }
+    .egg-glow{position:absolute; inset:-40%; background:
+      radial-gradient(600px 220px at 50% -10%, rgba(167,139,250,.15), transparent 60%),
+      radial-gradient(600px 220px at 50% 110%, rgba(244,114,182,.10), transparent 60%);
+      pointer-events:none; filter: blur(8px);
+    }
+    .egg-sparkle{
+      position:absolute; inset:0; pointer-events:none; z-index:1;
+      background:
+        radial-gradient(4px 4px at 12% 28%, rgba(255,255,255,.7), transparent 60%),
+        radial-gradient(3px 3px at 84% 18%, rgba(255,255,255,.6), transparent 60%),
+        radial-gradient(3px 3px at 30% 80%, rgba(255,255,255,.55), transparent 60%);
+      opacity:.6; animation: sparkle 2.2s linear infinite;
+    }
+    @keyframes sparkle{0%{transform:translateY(0)}50%{transform:translateY(-3px)}100%{transform:translateY(0)}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <div class="media" id="photoArea">
+      <img src="lil' gup.jpg" alt="Portrait" />
+    </div>
+
+    <div class="content">
+      <h1 id="title" aria-label="Tap three times for a surprise">I'm thankful for you.</h1>
+      <p class="lead">For the little things, the surprise laughs, and the way you make ordinary moments feel like highlights. Thanks for being you.</p>
+    </div>
+
+    <!-- Poems Section -->
+    <section class="poems" aria-labelledby="poemsLabel">
+      <div class="poem-row">
+        <label id="poemsLabel" for="poemSelect">Poems</label>
+        <select id="poemSelect" title="Choose a poem"></select>
+        <div class="poem-meta" id="poemMeta"></div>
+        <div style="flex:1"></div>
+        <button class="btn" id="prevPoem" title="Previous">← Prev</button>
+        <button class="btn" id="nextPoem" title="Next">Next →</button>
+      </div>
+
+      <div class="poem-box">
+        <h3 class="poem-title" id="poemTitle"></h3>
+        <div class="poem-text" id="poemText"></div>
+        <div class="poem-actions">
+          <button class="btn muted" id="copyPoem" title="Copy poem text">Copy</button>
+          <button class="btn muted" id="linkPoem" title="Copy sharable link to this poem">Share link</button>
+        </div>
+      </div>
+
+      <hr class="sep" />
+      <div class="poem-meta muted">Tip: send me more poems and I’ll plug them in — or paste directly into the <code>poems</code> list in the HTML.</div>
+    </section>
+  </main>
+
+  <!-- Secret Message Modal (Easter egg) -->
+  <div class="egg-scrim" id="eggScrim" role="dialog" aria-modal="true" aria-labelledby="eggTitle" aria-describedby="eggText">
+    <div class="egg-modal">
+      <div class="egg-glow"></div>
+      <div class="egg-sparkle"></div>
+      <button class="egg-close" id="eggClose" aria-label="Close">✕</button>
+      <h2 class="egg-title" id="eggTitle">A little secret:</h2>
+      <div class="egg-text" id="eggText"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ====== POEMS DATA ======
+       Add more poems by appending to the array below.
+       id: short slug used in the URL (so you can deep-link or QR-link to a specific poem)
+       title: shown above the poem
+       note: optional — date, context, etc.
+       text: your poem; line breaks are preserved automatically
+    */
+    const poems = [
+      {
+        id: "little-things-in-the-lab",
+        title: "Little Things in the Lab",
+        note: "Shared moments — 2025",
+        text: `I searched among the lab supplies,
+And tried a rhyme or two,
+To write about the little things
+I’ve shared at work with you.
+
+But none of them could quite express
+The things I’d like to say,
+For only you could understand
+Our jokes along the way.
+
+From battles with an Uno card
+That sneaks from hand to hand,
+To lil’ gup facing Sample Noob
+In games we can’t withstand.
+
+The Saturdays I treasure most,
+When work feels less a chore,
+Because those days I get the chance
+To laugh with you some more.
+
+A hidden card, a scribbled line,
+Or something left behind,
+These little things might seem so small,
+But still they ease my mind.
+
+One day brought a mighty flame,
+A scramble through the haze,
+Yet even in the heat we laughed,
+A moment I still praise.
+
+You brighten up the darker days,
+You make the lab less bland,
+A spark of joy, a steady friend,
+A gift I never planned.
+
+No final card, no clever trick,
+No scavenger left to play,
+Just words I’ve wanted you to hear
+But never found a way.`
+      },
+      {
+        id: "evening-window",
+        title: "Evening at the Window",
+        note: "Draft — Sep 2025",
+        text: `The sky leaned close like a friend with a secret,
+and the day loosened its shoulders.
+
+You laughed,
+and the room learned a better way to be quiet.`
+      }
+      // ← Paste more here, e.g.
+      // ,{ id:"her-mornings", title:"Her Mornings", note:"Spring 2025", text:`First line...\nSecond line...` }
+    ];
+
+    /* ====== POEMS LOGIC ====== */
+    const selectEl = document.getElementById('poemSelect');
+    const titleEl  = document.getElementById('poemTitle');
+    const textEl   = document.getElementById('poemText');
+    const metaEl   = document.getElementById('poemMeta');
+    const prevBtn  = document.getElementById('prevPoem');
+    const nextBtn  = document.getElementById('nextPoem');
+    const copyBtn  = document.getElementById('copyPoem');
+    const linkBtn  = document.getElementById('linkPoem');
+
+    // Populate dropdown
+    poems.forEach((p, i)=>{
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.title;
+      selectEl.appendChild(opt);
+    });
+
+    function indexById(id){
+      const idx = poems.findIndex(p => p.id === id);
+      return idx >= 0 ? idx : 0;
+    }
+
+    function renderPoem(idx, pushState=true){
+      idx = Math.max(0, Math.min(poems.length-1, idx));
+      const p = poems[idx];
+      selectEl.value = p.id;
+      titleEl.textContent = p.title;
+      textEl.textContent = p.text;  // pre-wrap preserves line breaks
+      metaEl.textContent = p.note ? p.note : '';
+      prevBtn.disabled = (idx === 0);
+      nextBtn.disabled = (idx === poems.length-1);
+      if (pushState) history.replaceState(null, '', '#' + encodeURIComponent(p.id));
+    }
+
+    // Handlers
+    selectEl.addEventListener('change', ()=>{
+      renderPoem(indexById(selectEl.value));
+    });
+    prevBtn.addEventListener('click', ()=>{
+      const idx = indexById(selectEl.value);
+      renderPoem(idx-1);
+    });
+    nextBtn.addEventListener('click', ()=>{
+      const idx = indexById(selectEl.value);
+      renderPoem(idx+1);
+    });
+    copyBtn.addEventListener('click', async ()=>{
+      const p = poems[indexById(selectEl.value)];
+      const blob = `${p.title}\n\n${p.text}`;
+      try { await navigator.clipboard.writeText(blob); copyBtn.textContent = 'Copied!'; setTimeout(()=>copyBtn.textContent='Copy',1200); }
+      catch { alert('Copied poem:\n\n' + blob); }
+    });
+    linkBtn.addEventListener('click', async ()=>{
+      const p = poems[indexById(selectEl.value)];
+      const url = location.origin + location.pathname + '#' + encodeURIComponent(p.id);
+      try { await navigator.clipboard.writeText(url); linkBtn.textContent = 'Link copied!'; setTimeout(()=>linkBtn.textContent='Share link',1200); }
+      catch { alert('Poem link:\n' + url); }
+    });
+
+    // On load: pick poem from hash if present; default to the first one (yours)
+    const initialIdx = indexById(decodeURIComponent(location.hash.replace('#','')||''));
+    renderPoem(initialIdx, /*pushState*/false);
+
+    /* ====== EASTER EGG MODAL ====== */
+    (function(){
+      const title = document.getElementById('title');
+      const scrim = document.getElementById('eggScrim');
+      const closeBtn = document.getElementById('eggClose');
+      const eggTextEl = document.getElementById('eggText');
+      const message = "You're my favorite part of the day";
+      let taps = 0, tapTimer;
+
+      function openEgg(){
+        scrim.classList.add('show');
+        closeBtn.focus();
+        eggTextEl.textContent = '';
+        let i = 0, speed = 38;
+        const typer = () => { if (i <= message.length){ eggTextEl.textContent = message.slice(0, i++); setTimeout(typer, speed); } };
+        setTimeout(typer, 140);
+
+        function onKey(e){ if (e.key === 'Escape') closeEgg(); }
+        function onClickScrim(e){ if (e.target === scrim) closeEgg(); }
+        document.addEventListener('keydown', onKey, {once:true});
+        scrim.addEventListener('click', onClickScrim, {once:true});
+        closeBtn.addEventListener('click', closeEgg, {once:true});
+      }
+      function closeEgg(){ scrim.classList.remove('show'); }
+
+      title.addEventListener('click', ()=>{
+        clearTimeout(tapTimer); taps++;
+        if (taps === 3){ taps = 0; openEgg(); return; }
+        tapTimer = setTimeout(()=> taps = 0, 600);
+      });
+    })();
+  </script>
+</body>
+</html>
